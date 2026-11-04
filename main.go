@@ -1,11 +1,3 @@
-// Go fundamentals: my learning notes and practice examples.
-// Run this file from its folder with: go run main.go
-// Format it with: gofmt -w main.go
-//
-// Comments explain code but do not run. Use // for a single-line comment,
-// or /* ... */ for a block comment. Markdown asterisks, backslashes before
-// underscores, and HTML entities are not part of Go source code.
-
 // Every Go source file belongs to a package. The special package main is
 // used to build an executable program; it can contain many functions.
 package main
@@ -86,7 +78,7 @@ func main() {
 	var clubName string
 	var goals int
 	fmt.Println("Club:", clubName) // The name is empty text.
-	fmt.Println("Goals:", goals) // 0
+	fmt.Println("Goals:", goals)   // 0
 	space()
 
 	// 6. TYPE CONVERSION
@@ -114,7 +106,7 @@ func main() {
 	// alone does not execute its body. These calls now run all topic examples.
 	arithemitcs()
 	comparison()
-	ogicaloperators()
+	Logicaloperators()
 	conditionalStatement()
 	Loop()
 	space()
@@ -141,7 +133,7 @@ func main() {
 	// 9. MULTIPLE RETURN VALUES
 	// Go functions can return several values, received in positional order.
 	sum, difference := calculateScores(10, 4)
-	fmt.Println(sum) // 14
+	fmt.Println(sum)        // 14
 	fmt.Println(difference) // 6
 	space()
 
@@ -168,6 +160,29 @@ func main() {
 	learningMap()
 	space()
 	learningStruct()
+	space()
+
+	learningPointer()
+
+	space()
+
+	customer := Customer{Name: "Emma"}
+
+	owner := ShopOwner{Name: "Joker"}
+
+	owner.Introduce()
+
+	customer.Introduce()
+
+	space()
+	err := validateRiderAge(18)
+
+	if err != nil {
+		fmt.Println("Error:", err)
+		return
+	}
+	 fmt.Println("Rider age accepted")
+
 }
 
 // arithemitcs demonstrates division. The existing function name is retained.
@@ -194,8 +209,8 @@ func comparison() {
 	riderAge := 20
 	fmt.Println(riderAge == 20) // true: equal to
 	fmt.Println(riderAge != 20) // false: not equal to
-	fmt.Println(riderAge > 18) // true: greater than
-	fmt.Println(riderAge < 18) // false: less than
+	fmt.Println(riderAge > 18)  // true: greater than
+	fmt.Println(riderAge < 18)  // false: less than
 	fmt.Println(riderAge >= 20) // true: greater than or equal to
 	fmt.Println(riderAge <= 19) // false: less than or equal to
 
@@ -203,8 +218,8 @@ func comparison() {
 	// = assigns a value; == compares values. String equality is case-sensitive.
 }
 
-// ogicaloperators demonstrates combining boolean conditions.
-func ogicaloperators() {
+// Logicaloperators demonstrates combining boolean conditions.
+func Logicaloperators() {
 	isVerified := true
 	isOnline := false
 
@@ -338,7 +353,7 @@ func LearningArray() {
 
 	// Replacing an element changes its value, not the array's fixed length.
 	clubs[1] = "emma"
-	fmt.Println(clubs) // [a emma c]
+	fmt.Println(clubs)                                 // [a emma c]
 	fmt.Println("The length of the array", len(clubs)) // 3
 
 	// Use < len(clubs), not <=: the last valid index is len(clubs)-1.
@@ -458,19 +473,147 @@ func learningStruct() {
 		stock: 5,
 	}
 	fmt.Println(product.Name, "and price", product.Price)
-	// Practice still to complete: update product.stock using =, then print it.
 
-	// Next practice: a slice of structs uses []Product{...}.
-	// In for _, product := range products, product is a copy of each struct.
-	// Assigning product.stock does not update the original slice element.
-	// To change that field in the slice, use products[index].stock = ... .
+	type FootballPlayer struct {
+		Name  string
+		Goals int
+	}
+
+	players := []FootballPlayer{
+		{Name: "Saka", Goals: 12},
+		{Name: "Salah", Goals: 18},
+	}
+
+	players[0].Goals = 13
+
+	fmt.Println(players)
+
+	for _, player := range players {
+		fmt.Println(player.Name, player.Goals)
+	}
+
+	for index := range players {
+		players[index].Goals = players[index].Goals + 1
+	}
+
+	type DeliveryRider struct {
+		Name                string
+		CompletedDeliveries int
+	}
+
+	leanringRiderSlices := []DeliveryRider{
+		{Name: "Emma", CompletedDeliveries: 5},
+		{Name: "Joker", CompletedDeliveries: 2},
+		{Name: "Vic", CompletedDeliveries: 4},
+	}
+
+	for _, item := range leanringRiderSlices {
+		fmt.Println("the rider names", item.Name)
+	}
+
+	fmt.Println(leanringRiderSlices)
+
 }
 
-// space is a helper with no parameters and no returned values.
-// Each Println() with no arguments prints a newline, giving two blank lines.
-// A function may be declared below its callers; its position does not prevent
-// calls from main or from other functions in the same package.
+type Driver struct {
+	Name     string
+	IsOnline bool
+}
+
+func learningPointer() {
+	score := 10
+	scorePointer := &score // use & to get the address,This points to the address
+
+	fmt.Println(*scorePointer) // User * to get the value from the address
+
+	*scorePointer = 15 // you can also change the original value through the pointer
+
+	fmt.Println(score)
+
+	updateScore(&score)
+
+	fmt.Println(score)
+
+	finishedDeliveries := 5
+
+	increaseDeliveries(&finishedDeliveries)
+
+	fmt.Println("The updated value", finishedDeliveries)
+
+	driver := Driver{
+		Name:     "Emmanuel",
+		IsOnline: false,
+	}
+
+	driver2 := Driver{
+		Name:     "Joker",
+		IsOnline: true,
+	}
+
+	driver2.rename("Emma")
+
+	fmt.Println("After renaming:", driver2)
+
+	setOnlineStat(&driver)
+
+	driver.SetOffline()
+
+	fmt.Println(driver)
+
+}
+
+func (driver *Driver) rename(newName string) {
+	driver.Name = newName
+}
+
+func setOnlineStat(driver *Driver) {
+	(*driver).IsOnline = true
+}
+
+func updateScore(scorePointer *int) {
+	*scorePointer = 20
+}
+
+func increaseDeliveries(num *int) {
+	*num += 1
+}
+
+func (driver *Driver) SetOffline() {
+	driver.IsOnline = false
+}
+
+// Learning Interfaces
+// An interface describes methods a type must have
+
+type Introducer interface {
+	Introduce() string
+}
+
+type Customer struct {
+	Name string
+}
+
+type ShopOwner struct {
+	Name string
+}
+
+func (shopOwner ShopOwner) Introduce() string{
+	return "Shop Owner: " + shopOwner.Name
+}
+
+func (customer Customer) Introduce() string {
+	return "Customer: " + customer.Name
+}
+
 func space() {
 	fmt.Println()
 	fmt.Println()
+}
+
+
+func validateRiderAge (age int) error{
+	if age < 18 {
+		return fmt.Errorf("rider must be at least 18")
+	}
+	return nil
 }
