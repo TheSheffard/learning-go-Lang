@@ -5,7 +5,10 @@ package main
 // fmt is a standard-library package for formatted input and output.
 // Import it to use functions such as fmt.Println. It needs no separate install.
 // Imports apply to this file. An ordinary unused import is a compile error.
-import "fmt"
+import (
+	"fmt"
+	// "os/user"
+)
 
 // main is the entry-point function of this executable, after package
 // initialization. Statements in its body run in order unless control flow
@@ -182,6 +185,32 @@ func main() {
 		return
 	}
 	 fmt.Println("Rider age accepted")
+
+	space()
+
+	team, err := CreateTeam("Arsenal")
+
+	if err != nil {
+		fmt.Println("Could not create team:", err)
+		return
+	}
+
+	fmt.Println("Created team:", team.Name)
+
+	space()
+
+
+	rider, err := registerRider("", 16)
+
+	if err != nil{
+		fmt.Println("An Error occurred", err)
+
+		return
+	
+	}
+
+	fmt.Println("The riders value: ",rider)
+
 
 }
 
@@ -597,7 +626,7 @@ type ShopOwner struct {
 	Name string
 }
 
-func (shopOwner ShopOwner) Introduce() string{
+func (shopOwner ShopOwner) Introduce() string {
 	return "Shop Owner: " + shopOwner.Name
 }
 
@@ -610,10 +639,43 @@ func space() {
 	fmt.Println()
 }
 
-
-func validateRiderAge (age int) error{
+func validateRiderAge(age int) error {
 	if age < 18 {
 		return fmt.Errorf("rider must be at least 18")
 	}
 	return nil
+}
+
+type Team struct {
+	Name string
+}
+
+func CreateTeam(name string) (Team, error) {
+
+	if name == "" {
+		return Team{}, fmt.Errorf("team name is required")
+	}
+
+	return Team{Name: name}, nil
+}
+
+type RiderAccount struct {
+	Name string
+	Age  int
+}
+
+func registerRider(name string, age int) (RiderAccount, error) {
+	if name == "" {
+		return RiderAccount{}, fmt.Errorf("Riders name is required")
+
+	}
+
+	err := validateRiderAge(age)
+
+	if err != nil {
+		return RiderAccount{}, err
+	}
+
+	return RiderAccount{name, age}, nil
+
 }
